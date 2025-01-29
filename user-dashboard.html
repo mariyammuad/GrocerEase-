@@ -86,9 +86,9 @@
 
   <script>
     const products = [
-      { id: 1, name: 'Apple', price: 1, image: 'https://www.theayurveda.org/wp-content/uploads/2015/08/Apple-fruit.jpg' },
-      { id: 2, name: 'Banana', price: 0.5, image: 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg' },
-      { id: 3, name: 'Carrot', price: 0.8, image: 'https://th.bing.com/th/id/R.170d5250ebf8d71ba3ee761b80db1686?rik=XEuIh1yh22KyWQ&pid=ImgRaw&r=0' },
+      { id: 1, name: 'Apple', price: 1, description: 'Fresh and juicy red apples.', image: 'https://www.theayurveda.org/wp-content/uploads/2015/08/Apple-fruit.jpg' },
+      { id: 2, name: 'Banana', price: 0.5, description: 'Sweet and ripe bananas.', image: 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg' },
+      { id: 3, name: 'Carrot', price: 0.8, description: 'Crunchy and healthy carrots.', image: 'https://th.bing.com/th/id/R.170d5250ebf8d71ba3ee761b80db1686?rik=XEuIh1yh22KyWQ&pid=ImgRaw&r=0' },
     ];
 
     const cart = [];
@@ -101,7 +101,10 @@
         productCard.innerHTML = `
           <img src="${product.image}" alt="${product.name}">
           <h3>${product.name}</h3>
+          <p>${product.description}</p>
           <p>Price: $${product.price}</p>
+          <label for="quantity-${product.id}">Quantity:</label>
+          <input type="number" id="quantity-${product.id}" value="1" min="1" style="width: 60px; margin-bottom: 10px;">
           <button onclick="addToCart(${product.id})">Add to Cart</button>
         `;
         productList.appendChild(productCard);
@@ -110,7 +113,16 @@
 
     function addToCart(productId) {
       const product = products.find(p => p.id === productId);
-      cart.push(product);
+      const quantityInput = document.getElementById(`quantity-${productId}`);
+      const quantity = parseInt(quantityInput.value);
+
+      const cartItemIndex = cart.findIndex(item => item.id === productId);
+      if (cartItemIndex > -1) {
+        cart[cartItemIndex].quantity += quantity;
+      } else {
+        cart.push({ ...product, quantity });
+      }
+
       updateCart();
     }
 
@@ -120,11 +132,11 @@
       cartList.innerHTML = '';
       let totalPrice = 0;
 
-      cart.forEach(product => {
+      cart.forEach(item => {
         const cartItem = document.createElement('li');
-        cartItem.textContent = `${product.name} - $${product.price}`;
+        cartItem.textContent = `${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`;
         cartList.appendChild(cartItem);
-        totalPrice += product.price;
+        totalPrice += item.price * item.quantity;
       });
 
       totalPriceEl.innerText = totalPrice.toFixed(2);

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up</title>
   <style>
-    body {
+     body {
       font-family: 'Arial', sans-serif;
       background-color: #9CDBA6;
       margin: 0;
@@ -87,7 +87,7 @@
   <div class="container">
     <h2>Sign Up</h2>
 
-    <form action="http://localhost:8080/api/users/register" method="POST">
+    <form id="signupForm" action="http://localhost:8080/api/users/register" method="POST" onsubmit="handleSubmit(event)">
       <div class="form-group">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
@@ -113,6 +113,37 @@
       <p>Already have an account? <a href="user-dashboard.html">Log in</a></p>
     </div>
   </div>
+
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault(); // Prevent the default form submission
+  
+      const data = {
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value,
+        role: document.getElementById('role').value
+      };
+  
+      fetch('http://localhost:8080/api/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Set JSON content type
+        },
+        body: JSON.stringify(data), // Convert the data to JSON
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = 'user-dashboard.html'; // Redirect to the dashboard
+        } else {
+          response.text().then(text => alert(`Signup failed: ${text}`)); // Show error details
+        }
+      })
+      .catch(error => {
+        alert('An error occurred. Please try again later.');
+        console.error(error);
+      });
+    }
+  </script>  
 
 </body>
 </html>
