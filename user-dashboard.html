@@ -1,148 +1,297 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #9CDBA6;
-      margin: 0;
-      padding: 0;
-    }
-    nav {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px;
-      text-align: center;
-    }
-    .container {
-      padding: 20px;
-    }
-    .card-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 15px;
-      background-color: #fff;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-    }
-    .card img {
-      width: 100px;
-      height: 100px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    .card h3 {
-      margin: 10px 0;
-      font-size: 18px;
-      color: #333;
-    }
-    .card p {
-      font-size: 16px;
-      color: #555;
-      margin-bottom: 15px;
-    }
-    .card button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .card button:hover {
-      background-color: #45a049;
-    }
-    .cart {
-      margin-top: 30px;
-    }
-  </style>
-</head>
-<body>
-  <nav>
-    <h1>Welcome, User</h1>
-  </nav>
-  <div class="container">
-    <h2>Products</h2>
-    <div id="productList" class="card-container"></div>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #9CDBA6;
+            margin: 0;
+            padding: 50px 0 0 0; /* Added padding-top to create space for the navbar */
+        }
+        nav {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        }
+        .container {
+        padding-top: 70px; /* Adjusted to account for fixed navbar */
+        flex-grow: 1;
+        margin-right: 50px; /* Space for the sidebar */
+        }
+        .card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        padding: 20px;
+        }
+        .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        }
+        .card h3 {
+        margin: 10px 0;
+        font-size: 18px;
+        color: #333;
+        }
+        .card p {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 15px;
+        }
+        .card button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        }
+        .card button:hover {
+        background-color: #45a049;
+        }
+        
+        /* Cart Sidebar */
+        #cartSidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 100%;
+        background-color: #fff;
+        box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: none; /* Hidden by default */
+        overflow-y: auto;
+        z-index: 999;
+        }
+        #cartSidebar h2 {
+        margin-top: 0;
+        }
+        #cartSidebar .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #ccc;
+        }
+        .cart-item span {
+        flex: 1;
+        text-align: left;
+        }
+        .cart-item button {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        }
+        .cart-item button:hover {
+        background-color: #e63939;
+        }
+        .clear-cart {
+        background-color: #ff5722;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 15px;
+        }
+        .clear-cart:hover {
+        background-color: #e64a19;
+        }
+        
+        .show-cart-btn {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background-color: #bae1bb;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-    <h2>Cart</h2>
-    <ul id="cartList"></ul>
-    <h3>Total: $<span id="totalPrice">0</span></h3>
-  </div>
+        .show-cart-btn:hover {
+        background-color: #45a049;
+        }
 
-  <script>
-    const products = [
-      { id: 1, name: 'Apple', price: 1, description: 'Fresh and juicy red apples.', image: 'https://www.theayurveda.org/wp-content/uploads/2015/08/Apple-fruit.jpg' },
-      { id: 2, name: 'Banana', price: 0.5, description: 'Sweet and ripe bananas.', image: 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg' },
-      { id: 3, name: 'Carrot', price: 0.8, description: 'Crunchy and healthy carrots.', image: 'https://th.bing.com/th/id/R.170d5250ebf8d71ba3ee761b80db1686?rik=XEuIh1yh22KyWQ&pid=ImgRaw&r=0' },
-    ];
+        @media (max-width: 768px) {
+        .container {
+            margin-right: 0;
+        }
+        #cartSidebar {
+            width: 100%;
+        }
+        }
+    </style>
+    </head>
+    <body>
+    <nav>
+        <h1>Welcome, User</h1>
+    </nav>
+    <div class="container">
+        <h2>Products</h2>
+        <div id="productList" class="card-container"></div>
+    </div>
 
-    const cart = [];
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar">
+        <h2>Your Cart</h2>
+        <div id="cartList"></div>
+        <h3>Total: $<span id="totalPrice">0</span></h3>
+        <button class="clear-cart" onclick="clearCart()">Clear Cart</button>
+    </div>
 
-    function loadProducts() {
-      const productList = document.getElementById('productList');
-      products.forEach(product => {
-        const productCard = document.createElement('div');
-        productCard.className = 'card';
-        productCard.innerHTML = `
-          <img src="${product.image}" alt="${product.name}">
-          <h3>${product.name}</h3>
-          <p>${product.description}</p>
-          <p>Price: $${product.price}</p>
-          <label for="quantity-${product.id}">Quantity:</label>
-          <input type="number" id="quantity-${product.id}" value="1" min="1" style="width: 60px; margin-bottom: 10px;">
-          <button onclick="addToCart(${product.id})">Add to Cart</button>
-        `;
-        productList.appendChild(productCard);
-      });
-    }
+    <!-- Show Cart Button -->
+    <button class="show-cart-btn" onclick="toggleCartSidebar()">🛒</button>
 
-    function addToCart(productId) {
-      const product = products.find(p => p.id === productId);
-      const quantityInput = document.getElementById(`quantity-${productId}`);
-      const quantity = parseInt(quantityInput.value);
+            <script>
+            const products = [
+            { id: 1, name: 'Apple', price: 1.2, description: 'Fresh and juicy red apples.', image: 'https://www.theayurveda.org/wp-content/uploads/2015/08/Apple-fruit.jpg' },
+            { id: 2, name: 'Banana', price: 0.5, description: 'Sweet and ripe bananas.', image: 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg' },
+            { id: 3, name: 'Carrot', price: 0.8, description: 'Crunchy and healthy carrots.', image: 'https://th.bing.com/th/id/R.170d5250ebf8d71ba3ee761b80db1686?rik=XEuIh1yh22KyWQ&pid=ImgRaw&r=0' },
+            { id: 4, name: 'Tomato', price: 1.5, description: 'Fresh and ripe tomatoes for salads or cooking.', image: 'https://images-prod.healthline.com/hlcmsresource/images/AN_images/tomatoes-1296x728-feature.jpg' },
+            { id: 5, name: 'Milk', price: 2.5, description: 'Fresh milk from local farms.', image: 'https://th.bing.com/th/id/OIP.BzDK-5e8lCSDKq-YSu-KpQHaEl?w=296&h=183&c=7&r=0&o=5&dpr=1.3&pid=1.7' },
+            { id: 6, name: 'Butter', price: 3.5, description: 'Rich and creamy butter for cooking or spreading.', image: 'https://th.bing.com/th/id/OIP.RmnveciQZNOkRdSzUajEfgHaE7?w=235&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7' },
+            { id: 7, name: 'Chicken Breast', price: 5.0, description: 'Fresh and tender chicken breast for cooking.', image: 'https://th.bing.com/th/id/OIP.WngOuEsmldOhe6a4jVcrwQAAAA?w=273&h=183&c=7&r=0&o=5&dpr=1.3&pid=1.7' },
+            { id: 8, name: 'Bread', price: 1.8, description: 'Soft and fresh bread for sandwiches or toast.', image: 'https://th.bing.com/th/id/OIP.-5QkNnYrEZd0y0C63WFv_AHaE8?w=244&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7' },
+            { id: 9, name: 'Eggs', price: 2.0, description: 'Farm fresh eggs, perfect for breakfast or baking.', image: 'https://th.bing.com/th/id/OIP.8tWLuQQAjx2QxUY_s-eNXgHaDt?w=305&h=175&c=7&r=0&o=5&dpr=1.3&pid=1.7' },
+            { id: 10, name: 'Yogurt', price: 1.5, description: 'Smooth and creamy yogurt with live cultures.', image: 'https://th.bing.com/th/id/OIP.SXKNM6ElCtVlgfTNxy68hwHaF-?w=228&h=184&c=7&r=0&o=5&dpr=1.3&pid=1.7' },
+            //   { id: 11, name: 'Spinach', price: 1.0, description: 'Fresh and organic spinach for healthy salads or cooking.', image: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Spinach_in_Basket.jpg' },
+            //   { id: 12, name: 'Cheese', price: 4.0, description: 'Delicious and creamy cheese for your dishes.', image: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Cheese.jpg' },
+            //   { id: 13, name: 'Potatoes', price: 0.6, description: 'Fresh potatoes for baking or frying.', image: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/Potatoes_3.jpg' },
+            //   { id: 14, name: 'Juice', price: 1.3, description: 'Freshly squeezed fruit juice, sweet and refreshing.', image: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Orange_juice.jpg' },
+            //   { id: 15, name: 'Salmon', price: 7.5, description: 'Fresh and healthy salmon for grilling or baking.', image: 'https://upload.wikimedia.org/wikipedia/commons/6/67/Salmon_filets.jpg' }
+            ];
 
-      const cartItemIndex = cart.findIndex(item => item.id === productId);
-      if (cartItemIndex > -1) {
-        cart[cartItemIndex].quantity += quantity;
-      } else {
-        cart.push({ ...product, quantity });
-      }
 
-      updateCart();
-    }
+            const cart = [];
 
-    function updateCart() {
-      const cartList = document.getElementById('cartList');
-      const totalPriceEl = document.getElementById('totalPrice');
-      cartList.innerHTML = '';
-      let totalPrice = 0;
+            function loadProducts() {
+                const productList = document.getElementById('productList');
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'card';
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p>${product.description}</p>
+                        <p>Price: $${product.price}</p>
+                        <label for="quantity-${product.id}">Quantity:</label>
+                        <input type="number" id="quantity-${product.id}" value="1" min="1" style="width: 60px; margin-bottom: 10px;">
+                        <button onclick="addToCart(${product.id})">Add to Cart</button>
+                        <button onclick="buyNow(${product.id})" style="background-color: #ff5722; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">Buy Now</button>
+                    `;
+                    productList.appendChild(productCard);
+                });
+            }
 
-      cart.forEach(item => {
-        const cartItem = document.createElement('li');
-        cartItem.textContent = `${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`;
-        cartList.appendChild(cartItem);
-        totalPrice += item.price * item.quantity;
-      });
+            function addToCart(productId) {
+                const product = products.find(p => p.id === productId);
+                const quantityInput = document.getElementById(`quantity-${productId}`);
+                const quantity = parseInt(quantityInput.value);
 
-      totalPriceEl.innerText = totalPrice.toFixed(2);
-    }
+                const cartItemIndex = cart.findIndex(item => item.id === productId);
+                if (cartItemIndex > -1) {
+                    cart[cartItemIndex].quantity += quantity;
+                } else {
+                    cart.push({ ...product, quantity });
+                }
 
-    loadProducts();
-  </script>
-</body>
-</html>
+                updateCart();
+            }
+
+            function buyNow(productId) {
+                const product = products.find(p => p.id === productId);
+                const quantity = 1;  // Default quantity is 1 for "Buy Now" button
+
+                const cartItemIndex = cart.findIndex(item => item.id === productId);
+                if (cartItemIndex > -1) {
+                    cart[cartItemIndex].quantity += quantity;
+                } else {
+                    cart.push({ ...product, quantity });
+                }
+
+                toggleCartSidebar(); // Open the cart sidebar automatically when an item is bought
+                updateCart();
+            }
+
+            function updateCart() {
+                const cartList = document.getElementById('cartList');
+                const totalPrice = document.getElementById('totalPrice');
+                cartList.innerHTML = '';
+
+                let total = 0;
+
+                cart.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    cartItem.innerHTML = `
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                        <button onclick="removeFromCart(${item.id})">Remove</button>
+                    `;
+                    cartList.appendChild(cartItem);
+                    total += item.price * item.quantity;
+                });
+
+                totalPrice.innerText = total.toFixed(2);
+            }
+
+            function removeFromCart(productId) {
+                const cartItemIndex = cart.findIndex(item => item.id === productId);
+                if (cartItemIndex > -1) {
+                    cart.splice(cartItemIndex, 1);
+                }
+
+                updateCart();
+            }
+
+            function toggleCartSidebar() {
+                const cartSidebar = document.getElementById('cartSidebar');
+                cartSidebar.style.display = cartSidebar.style.display === 'block' ? 'none' : 'block';
+            }
+
+            function clearCart() {
+                cart.length = 0; // Clear the cart
+                updateCart();
+                toggleCartSidebar(); // Close the cart sidebar after clearing
+            }
+
+            loadProducts(); // Initialize the products on page load
+
+    </script>
+    </body>
+    </html>

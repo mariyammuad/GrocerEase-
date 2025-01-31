@@ -73,20 +73,35 @@
   </div>
 
   <script>
-    function handleLogin(event) {
-      event.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+    async function handleLogin(event) {
+  event.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-      // Example role-based redirection
-      if (username === 'admin' && password === 'admin123') {
-        window.location.href = '/admin-dashboard.html';
-      } else if (username === 'user' && password === 'user123') {
-        window.location.href = '/user-dashboard.html';
-      } else {
-        document.getElementById('error').innerText = 'Invalid username or password!';
+  try {
+    const response = await fetch("http://localhost:8082/api/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (response.ok) {
+      const role = await response.text();
+      if (role === "ADMIN") {
+        window.location.href = "/admin-dashboard.html";
+      } else if (role === "USER") {
+        window.location.href = "/user-dashboard.html";
       }
+    } else {
+      document.getElementById("error").innerText = "Invalid username or password!";
     }
+  } catch (error) {
+    console.error("Error during login:", error);
+    document.getElementById("error").innerText = "An error occurred. Please try again.";
+  }
+}
+
+    
   </script>
 </body>
 </html>

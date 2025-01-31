@@ -140,15 +140,17 @@
   <script>
     const productList = document.getElementById('productList');
 
-    // Fetch all products when the page loads
+    // Function to fetch all products from the API
     function fetchProducts() {
-      fetch('http://localhost:8080/api/products')
+      fetch('http://localhost:8082/api/products')
         .then(response => response.json())
         .then(data => {
-          productList.innerHTML = '';
+          console.log('Fetched products:', data);  // Debug: check if the data is being received
+          productList.innerHTML = '';  // Clear existing list
+
+          // Loop through each product and display it
           data.forEach(product => {
             const item = document.createElement('li');
-
             item.innerHTML = `
               <span>${product.name} - $${product.price}</span>
               <div class="actions">
@@ -158,9 +160,11 @@
             `;
             productList.appendChild(item);
           });
-        });
+        })
+        .catch(error => console.log('Error fetching products:', error));
     }
 
+    // Trigger the fetch on page load
     fetchProducts();
 
     // Handle form submission to add a new product
@@ -174,7 +178,8 @@
         quantity: parseInt(document.getElementById('quantity').value)
       };
 
-      fetch('http://localhost:8080/api/products', {
+      // Add new product via API
+      fetch('http://localhost:8082/api/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -183,8 +188,9 @@
       })
       .then(response => response.json())
       .then(data => {
+        console.log('Added product:', data);  // Debug: check if the product was added successfully
         alert('Product added successfully!');
-        fetchProducts(); // Refresh the product list
+        fetchProducts();  // Refresh the product list
         document.getElementById('productForm').reset();
       })
       .catch(error => console.log('Error:', error));
@@ -192,7 +198,7 @@
 
     // Function to delete a product
     function deleteProduct(productId) {
-      fetch(`http://localhost:8080/api/products/${productId}`, {
+      fetch(`http://localhost:8082/api/products/${productId}`, {
         method: 'DELETE'
       })
       .then(response => {
@@ -220,7 +226,7 @@
         quantity: updatedQuantity
       };
 
-      fetch(`http://localhost:8080/api/products/${id}`, {
+      fetch(`http://localhost:8082/api/products/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
